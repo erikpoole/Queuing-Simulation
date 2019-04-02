@@ -15,11 +15,11 @@ event::event(long inputEventTime, long inputServiceTime, long inputTimeTaken) {
 }
 
 void event::handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters) {
-    std::cout << "poop" << std::endl;
+    assert(false);
 }
 
 void newPersonEvent::handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters) {
-    std::cout << "New Person\n";
+//    std::cout << "New Person\n";
     
     globalTime = eventTime;
     
@@ -34,7 +34,7 @@ void newPersonEvent::handleEvent(long &globalTime, long &totalLineTime, std::que
 }
 
 void tellerFreedEvent::handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters) {
-    std::cout << "Teller Freed\n";
+//    std::cout << "Teller Freed\n";
     
     globalTime = eventTime;
     
@@ -52,6 +52,18 @@ bool compareEvents::operator()(event* rhs, event* lhs) {
     return rhs->eventTime > lhs->eventTime;
 }
 
+
+int determineLine(std::vector<long> lineTimes) {
+    long lowTime = lineTimes[0];
+    int index = 0;
+    for (int i = 0; i < lineTimes.size(); i++) {
+        if (lineTimes[i] < lowTime) {
+            lowTime = lineTimes[i];
+            index = i;
+        }
+    }
+    return index;
+}
 
 
 void printPercentiles(std::vector<long> inputVector) {
@@ -73,5 +85,5 @@ void printPercentiles(std::vector<long> inputVector) {
 //    std::cout << fiftiethPercentile << " " << fiftiethPercentileIndex << "\n";
 //    std::cout << nintiethPercentile << " " << nintiethPercentileIndex << "\n";
     
-    std::cout << "10th %ile " << tenthPercentile << ", 50th %ile " << fiftiethPercentile << ", 90th %ile " << nintiethPercentile << "\n";
+    std::cout << "10th percenile " << tenthPercentile << "\n50th percentile " << fiftiethPercentile << "\n90th percentile " << nintiethPercentile << "\n\n";
 }

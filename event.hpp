@@ -47,11 +47,12 @@ public:
 
 
 
-
 class compareEvents {
 public:
     bool operator()(event* rhs, event* lhs);
 };
 
+
+int determineLine(std::vector<long> lineTimes);
 
 void printPercentiles(std::vector<long> inputVector);
