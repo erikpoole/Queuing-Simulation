@@ -31,7 +31,7 @@ int main(int argc, const char * argv[]) {
     std::vector<long> customerTimes;
     
     //TODO close enough to number..?
-    for (int i = 0; i < workdayInSeconds/10; i++) {
+    for (int i = 0; i < workdayInSeconds; i++) {
         if (rand() % (long) (1/customersPerSecond) == 0) {
             long serviceTime = rand() % (long) maximumServiceTimeInSeconds;
             newPersonEvent* eventPtr = new newPersonEvent(i, serviceTime, 0);
@@ -39,11 +39,15 @@ int main(int argc, const char * argv[]) {
         }
     }
     
+    std::cout << "Customers: " << eventQueue.size() << "\n";
     double totalEvents = 0;
     double customers = eventQueue.size();
-    while (eventQueue.size() != 0) {
-        std::cout << eventQueue.top()->eventTime << "\n";
+    while (eventQueue.size() != 0 && globalTimeInSeconds < workdayInSeconds) {
+
         event* currentEventPtr = eventQueue.top();
+//        std::cout << eventQueue.top()->eventTime << "\n";
+//        std::cout << "Registers: " << registerCount << " LineTime: " << lineTime << "\n";
+//        std::cout << "Service Time: " << currentEventPtr->serviceTime << "\n";
         eventQueue.pop();
         currentEventPtr->handleEvent(globalTimeInSeconds, lineTime, lineTimes, eventQueue, registerCount);
         
@@ -53,12 +57,12 @@ int main(int argc, const char * argv[]) {
         
         totalEvents++;
     }
-    assert(totalEvents == customers * 2);
     
-    for (long time : customerTimes) {
-        std::cout << time << "\n";
-    }
+//    for (long time : customerTimes) {
+//        std::cout << time << "\n";
+//    }
     
+    std::sort(customerTimes.begin(), customerTimes.end());
     std::cout << "Bank service time in minutes: ";
     printPercentiles(customerTimes);
     

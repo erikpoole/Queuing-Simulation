@@ -21,7 +21,7 @@ void event::handleEvent(long &globalTime, long &totalLineTime, std::queue<long> 
 void newPersonEvent::handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters) {
     std::cout << "New Person\n";
     
-    globalTime += eventTime;
+    globalTime = eventTime;
     
     tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+serviceTime+totalLineTime, serviceTime, serviceTime+totalLineTime);
     eventQueue.push(eventPtr);
@@ -35,6 +35,8 @@ void newPersonEvent::handleEvent(long &globalTime, long &totalLineTime, std::que
 
 void tellerFreedEvent::handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters) {
     std::cout << "Teller Freed\n";
+    
+    globalTime = eventTime;
     
     if (lineTimes.size() == 0) {
         freeRegisters++;
@@ -53,6 +55,8 @@ bool compareEvents::operator()(event* rhs, event* lhs) {
 
 
 void printPercentiles(std::vector<long> inputVector) {
+    
+    
     double valuesPerPercentile = (double) inputVector.size() / 100;
 
     int tenthPercentileIndex = (int) 10*valuesPerPercentile;
