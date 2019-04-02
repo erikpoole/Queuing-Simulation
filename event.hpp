@@ -11,26 +11,46 @@
 
 #include <stdio.h>
 
+#include <iostream>
+#include <queue>
+#include <vector>
+
 #endif /* event_hpp */
+
+class compareEvents;
 
 class event {
 public:
-    long startTime;
+    long eventTime;
+    long serviceTime;
+    long totalTime;
     
-    event(long inputTime);
+    event(long inputEventTime, long inputServiceTime, long inputTotalTime);
+    
+    virtual void handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
 };
 
 class newPersonEvent : public event {
+public:
     using event::event;
+    
+    void handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
 };
 
 class tellerFreedEvent : public event {
+public:
     using event::event;
+    
+    void handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
 };
+
+
+
+
 
 class compareEvents {
 public:
-    bool operator()(event rhs, event lhs);
+    bool operator()(event* rhs, event* lhs);
 };
 
 
