@@ -8,21 +8,18 @@
 
 #include "line.hpp"
 
-line::line() {
+line::line(int numRegisters) {
     totalLineTime = 0;
+    registers = numRegisters;
 }
 
 void line::addCustomer(long newCustomer) {
-    customersInLine.push(newCustomer);
     totalLineTime += newCustomer;
 }
 
-void line::removeCustomer() {
-    long leavingCustomer = customersInLine.front();
-    customersInLine.pop();
-    totalLineTime -= leavingCustomer;
-}
-
-void line::updateTime(long timePassed) {
+void line::syncLine(long timePassed) {
     totalLineTime -= timePassed;
+    if (totalLineTime < 0) {
+        totalLineTime = 0;
+    }
 }

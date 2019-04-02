@@ -26,24 +26,25 @@ public:
     long eventTime;
     long serviceTime;
     long timeTaken;
+    long lineNumber;
     
-    event(long inputEventTime, long inputServiceTime, long inputTotalTime);
+    event(long inputEventTime, long inputServiceTime, long inputTimeTaken, long inputLine);
     
-    virtual void handleEvent(long &globalTime, line &currentLine, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
+    virtual void handleEvent(long &globalTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue);
 };
 
 class newPersonEvent : public event {
 public:
     using event::event;
     
-    void handleEvent(long &globalTime, line &currentLine, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
+    void handleEvent(long &globalTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue);
 };
 
 class tellerFreedEvent : public event {
 public:
     using event::event;
     
-    void handleEvent(long &globalTime, line &currentLine, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
+    void handleEvent(long &globalTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue);
 };
 
 

@@ -8,58 +8,55 @@
 
 #include "event.hpp"
 
-event::event(long inputEventTime, long inputServiceTime, long inputTimeTaken) {
+event::event(long inputEventTime, long inputServiceTime, long inputTimeTaken, long inputLine) {
     eventTime = inputEventTime;
     serviceTime = inputServiceTime;
     timeTaken = inputTimeTaken;
+    lineNumber = inputLine;
 }
 
 
-void event::handleEvent(long &globalTime, line &currentLine, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters) {
+void event::handleEvent(long &globalTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue) {
     assert(false);
 }
 
 
-void newPersonEvent::handleEvent(long &globalTime, line &currentLine, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters) {
-    //    std::cout << "New Person\n";
-    
+void newPersonEvent::handleEvent(long &globalTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue) {
+//        std::cout << "New Person\n";
+
+    for (line l : lines) {
+        l.syncLine(eventTime-globalTime);
+    }
     globalTime = eventTime;
     
-    tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+serviceTime+currentLine.totalLineTime, serviceTime, serviceTime+currentLine.totalLineTime);
+    lineNumber = determineLine(lines);
+    
+    //PROBLEM - inputTimeTaken is aggregate of ALL people in line and assumes just one register
+//    tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+serviceTime+currentLine.totalLineTime, serviceTime, serviceTime+(currentLine.totalLineTime/6));
+    
+    tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+serviceTime+lines[lineNumber].totalLineTime, serviceTime, serviceTime+lines[lineNumber].totalLineTime, lineNumber);
     eventQueue.push(eventPtr);
-    if (freeRegisters > 0) {
-        freeRegisters--;
+    if (lines[lineNumber].registers > 0) {
+        lines[lineNumber].registers--;
     } else {
-        currentLine.addCustomer(serviceTime);
+        lines[lineNumber].addCustomer(serviceTime);
     }
 }
 
 
-void tellerFreedEvent::handleEvent(long &globalTime, line &currentLine, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters) {
+void tellerFreedEvent::handleEvent(long &globalTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue) {
 //    std::cout << "Teller Freed\n";
     
+    for (line l : lines) {
+        l.syncLine(eventTime-globalTime);
+    }
     globalTime = eventTime;
     
-    if (currentLine.customersInLine.size() == 0) {
-        freeRegisters++;
-    } else {
-        currentLine.removeCustomer();
+//    std::cout << lines[lineNumber].totalLineTime << "\n";
+    if (lines[lineNumber].totalLineTime <= 0) {
+        lines[lineNumber].registers++;
     }
 }
-
-/*
- void line::addCustomer(long newCustomer) {
- customersInLine.push(newCustomer);
- totalLineTime += newCustomer;
- }
- 
- void line::removeCustomer() {
- long leavingCustomer = customersInLine.front();
- customersInLine.pop();
- totalLineTime -= leavingCustomer;
- }
- */
-
 
 
 bool compareEvents::operator()(event* rhs, event* lhs) {
@@ -71,6 +68,11 @@ bool compareEvents::operator()(event* rhs, event* lhs) {
 int determineLine(std::vector<line> lines) {
     long lowTime = lines[0].totalLineTime;
     int index = 0;
+    for (int i = 0; i < lines.size(); i++) {
+        if (lines[i].registers > 0) {
+            return i;
+        }
+    }
     for (int i = 0; i < lines.size(); i++) {
         if (lines[i].totalLineTime < lowTime) {
             lowTime = lines[i].totalLineTime;
