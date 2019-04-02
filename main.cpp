@@ -28,9 +28,10 @@ int main(int argc, const char * argv[]) {
     srand(randomSeed);
     std::priority_queue<event*, std::vector<event*>, compareEvents> eventQueue;
     std::queue<long> lineTimes;
+    std::vector<long> customerTimes;
     
     //TODO close enough to number..?
-    for (int i = 0; i < workdayInSeconds; i++) {
+    for (int i = 0; i < workdayInSeconds/10; i++) {
         if (rand() % (long) (1/customersPerSecond) == 0) {
             long serviceTime = rand() % (long) maximumServiceTimeInSeconds;
             newPersonEvent* eventPtr = new newPersonEvent(i, serviceTime, 0);
@@ -41,14 +42,25 @@ int main(int argc, const char * argv[]) {
     double totalEvents = 0;
     double customers = eventQueue.size();
     while (eventQueue.size() != 0) {
-//        std::cout << eventQueue.top()->eventTime << "\n";
+        std::cout << eventQueue.top()->eventTime << "\n";
         event* currentEventPtr = eventQueue.top();
+        eventQueue.pop();
         currentEventPtr->handleEvent(globalTimeInSeconds, lineTime, lineTimes, eventQueue, registerCount);
         
-        void handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event, std::vector<event>, compareEvents> &eventQueue, int &freeRegisters);
-
-        eventQueue.pop();
+        if (currentEventPtr->timeTaken != 0) {
+            customerTimes.push_back(currentEventPtr->timeTaken);
+        }
+        
         totalEvents++;
     }
     assert(totalEvents == customers * 2);
+    
+    for (long time : customerTimes) {
+        std::cout << time << "\n";
+    }
+    
+    std::cout << "Bank service time in minutes: ";
+    printPercentiles(customerTimes);
+    
+    
 }

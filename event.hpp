@@ -23,7 +23,7 @@ class event {
 public:
     long eventTime;
     long serviceTime;
-    long totalTime;
+    long timeTaken;
     
     event(long inputEventTime, long inputServiceTime, long inputTotalTime);
     
@@ -54,4 +54,4 @@ public:
 };
 
 
-
+void printPercentiles(std::vector<long> inputVector);
