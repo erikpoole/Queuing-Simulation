@@ -15,6 +15,8 @@
 #include <queue>
 #include <vector>
 
+#include "line.hpp"
+
 #endif /* event_hpp */
 
 class compareEvents;
@@ -27,21 +29,21 @@ public:
     
     event(long inputEventTime, long inputServiceTime, long inputTotalTime);
     
-    virtual void handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
+    virtual void handleEvent(long &globalTime, line &currentLine, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
 };
 
 class newPersonEvent : public event {
 public:
     using event::event;
     
-    void handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
+    void handleEvent(long &globalTime, line &currentLine, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
 };
 
 class tellerFreedEvent : public event {
 public:
     using event::event;
     
-    void handleEvent(long &globalTime, long &totalLineTime, std::queue<long> &lineTimes, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
+    void handleEvent(long &globalTime, line &currentLine, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue, int &freeRegisters);
 };
 
 
@@ -53,6 +55,7 @@ public:
 };
 
 
-int determineLine(std::vector<long> lineTimes);
+//int determineLine(std::vector<long> lineTimes);
+int determineLine(std::vector<line> lineTimes);
 
 void printPercentiles(std::vector<long> inputVector);

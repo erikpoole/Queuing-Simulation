@@ -24,9 +24,10 @@ int main(int argc, const char * argv[]) {
     
     srand(randomSeed);
     std::priority_queue<event*, std::vector<event*>, compareEvents> eventQueue;
-    long totalQueueTime = 0;
-    std::queue<long> singlePersonQueueTimes;
     std::vector<long> customerTimes;
+    
+    line bankLine = line();
+
     
     //TODO close enough to number..?
     for (int i = 0; i < workdayInSeconds; i++) {
@@ -45,7 +46,7 @@ int main(int argc, const char * argv[]) {
 //        std::cout << "Registers: " << registerCount << " LineTime: " << lineTime << "\n";
 //        std::cout << "Service Time: " << currentEventPtr->serviceTime << "\n";
         eventQueue.pop();
-        currentEventPtr->handleEvent(globalTimeInSeconds, totalQueueTime, singlePersonQueueTimes, eventQueue, registerCount);
+        currentEventPtr->handleEvent(globalTimeInSeconds, bankLine, eventQueue, registerCount);
         
         if (currentEventPtr->timeTaken != 0) {
             customerTimes.push_back(currentEventPtr->timeTaken);
@@ -65,12 +66,14 @@ int main(int argc, const char * argv[]) {
     
     
     globalTimeInSeconds = 0;
+    registerCount = 6;
     
     srand(randomSeed);
-    eventQueue.empty();
-    std::vector<long> totalLineTimes(6);
-    std::vector<std::queue<long>> singlePersonLineTimes(6);
-    customerTimes.empty();
+    eventQueue = std::priority_queue<event*, std::vector<event*>, compareEvents>();
+    customerTimes = std::vector<long>();
+    assert(eventQueue.size() == 0 && customerTimes.size() == 0);
+    
+    std::vector<line> marketLines(6);
     
     //TODO close enough to number..?
     for (int i = 0; i < workdayInSeconds; i++) {
@@ -89,8 +92,9 @@ int main(int argc, const char * argv[]) {
         //        std::cout << "Service Time: " << currentEventPtr->serviceTime << "\n";
         eventQueue.pop();
         
-        int lineIndex = determineLine(totalLineTimes);
-        currentEventPtr->handleEvent(globalTimeInSeconds, totalLineTimes[lineIndex], singlePersonLineTimes[lineIndex], eventQueue, registerCount);
+        int lineIndex = determineLine(marketLines);
+        currentEventPtr->handleEvent(globalTimeInSeconds, marketLines[lineIndex], eventQueue, registerCount);
+
         
         if (currentEventPtr->timeTaken != 0) {
             customerTimes.push_back(currentEventPtr->timeTaken);
