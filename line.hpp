@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <queue>
+#include "customer.hpp"
 
 #endif /* line_hpp */
 
@@ -19,8 +20,9 @@ class line {
 public:
     long totalLineTime;
     int registers;
+    std::queue<customer> customers;
     
     line(int numRegisters);
-    void addCustomer(long newCustomer);
+    void addCustomer(customer newCustomer);
     void syncLine(long timePassed);
 };

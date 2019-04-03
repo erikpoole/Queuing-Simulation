@@ -34,14 +34,18 @@ void newPersonEvent::handleEvent(long &globalTime, std::vector<line> &lines, std
     //PROBLEM - inputTimeTaken is aggregate of ALL people in line and assumes just one register
 //    tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+serviceTime+currentLine.totalLineTime, serviceTime, serviceTime+(currentLine.totalLineTime/6));
     
-    tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+serviceTime+lines[lineNumber].totalLineTime, serviceTime, serviceTime+lines[lineNumber].totalLineTime, lineNumber);
-    eventQueue.push(eventPtr);
+
     if (lines[lineNumber].registers > 0) {
         lines[lineNumber].registers--;
+        tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+serviceTime, serviceTime, serviceTime, lineNumber);
+        eventQueue.push(eventPtr);
     } else {
-        lines[lineNumber].addCustomer(serviceTime);
+        lines[lineNumber].addCustomer(customer(eventTime, serviceTime));
     }
 }
+
+//event(long inputEventTime, long inputServiceTime, long inputTimeTaken, long inputLine);
+
 
 
 void tellerFreedEvent::handleEvent(long &globalTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue) {
@@ -53,8 +57,13 @@ void tellerFreedEvent::handleEvent(long &globalTime, std::vector<line> &lines, s
     globalTime = eventTime;
     
 //    std::cout << lines[lineNumber].totalLineTime << "\n";
-    if (lines[lineNumber].totalLineTime <= 0) {
+    if (lines[lineNumber].customers.size() == 0) {
         lines[lineNumber].registers++;
+    } else {
+        customer currentCustomer = lines[lineNumber].customers.front();
+        lines[lineNumber].customers.pop();
+        tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+currentCustomer.timeNeeded, serviceTime, globalTime-currentCustomer.arrivalTime+serviceTime, lineNumber);
+        eventQueue.push(eventPtr);
     }
 }
 

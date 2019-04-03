@@ -13,8 +13,9 @@ line::line(int numRegisters) {
     registers = numRegisters;
 }
 
-void line::addCustomer(long newCustomer) {
-    totalLineTime += newCustomer;
+void line::addCustomer(customer newCustomer) {
+    totalLineTime += newCustomer.timeNeeded;
+    customers.push(newCustomer);
 }
 
 void line::syncLine(long timePassed) {

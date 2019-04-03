@@ -19,9 +19,9 @@ int main(int argc, const char * argv[]) {
     double randomSeed = std::stod(argv[3]);
     
     long globalTimeInSeconds = 0;
-//    long workdayInSeconds = 12*60*60;
+    long workdayInSeconds = 12*60*60;
 //    long workdayInSeconds = 200;
-    long workdayInSeconds = 210;
+//    long workdayInSeconds = 210;
 
     
     srand(randomSeed);
@@ -49,7 +49,7 @@ int main(int argc, const char * argv[]) {
         
         currentEventPtr->handleEvent(globalTimeInSeconds, bankLines, eventQueue);
         
-        std::cout << currentEventPtr->timeTaken << "\n";
+//        std::cout << currentEventPtr->timeTaken << "\n";
         if (currentEventPtr->timeTaken != 0) {
             customerTimes.push_back(currentEventPtr->timeTaken);
         }
@@ -90,7 +90,6 @@ int main(int argc, const char * argv[]) {
         }
     }
     
-        std::cout << "Customers: " << eventQueue.size() << "\n\n";
     while (eventQueue.size() != 0 && globalTimeInSeconds < workdayInSeconds) {
         
         event* currentEventPtr = eventQueue.top();
@@ -98,7 +97,7 @@ int main(int argc, const char * argv[]) {
         
         currentEventPtr->handleEvent(globalTimeInSeconds, marketLines, eventQueue);
 
-        std::cout << currentEventPtr->timeTaken << "\n";
+//        std::cout << currentEventPtr->timeTaken << "\n";
         if (currentEventPtr->timeTaken != 0) {
             customerTimes.push_back(currentEventPtr->timeTaken);
         }
