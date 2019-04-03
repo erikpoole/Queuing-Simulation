@@ -21,7 +21,7 @@ int main(int argc, const char * argv[]) {
     long globalTimeInSeconds = 0;
 //    long workdayInSeconds = 12*60*60;
 //    long workdayInSeconds = 200;
-    long workdayInSeconds = 250;
+    long workdayInSeconds = 210;
 
     
     srand(randomSeed);
@@ -41,6 +41,7 @@ int main(int argc, const char * argv[]) {
         }
     }
     
+    std::cout << "Customers: " << eventQueue.size() << "\n\n";
     while (eventQueue.size() != 0 && globalTimeInSeconds < workdayInSeconds) {
         
         event* currentEventPtr = eventQueue.top();
@@ -48,10 +49,15 @@ int main(int argc, const char * argv[]) {
         
         currentEventPtr->handleEvent(globalTimeInSeconds, bankLines, eventQueue);
         
+        std::cout << currentEventPtr->timeTaken << "\n";
         if (currentEventPtr->timeTaken != 0) {
             customerTimes.push_back(currentEventPtr->timeTaken);
         }
     }
+    
+//    for (double time : customerTimes) {
+//        std::cout << time << "\n";
+//    }
     
     std::sort(customerTimes.begin(), customerTimes.end());
     std::cout << "Bank service time in minutes:\n";
@@ -74,6 +80,7 @@ int main(int argc, const char * argv[]) {
         marketLines.push_back(line(1));
     }
     
+    
     //TODO close enough to number..?
     for (int i = 0; i < workdayInSeconds; i++) {
         if (rand() % (long) (1/customersPerSecond) == 0) {
@@ -83,6 +90,7 @@ int main(int argc, const char * argv[]) {
         }
     }
     
+        std::cout << "Customers: " << eventQueue.size() << "\n\n";
     while (eventQueue.size() != 0 && globalTimeInSeconds < workdayInSeconds) {
         
         event* currentEventPtr = eventQueue.top();
@@ -90,10 +98,15 @@ int main(int argc, const char * argv[]) {
         
         currentEventPtr->handleEvent(globalTimeInSeconds, marketLines, eventQueue);
 
+        std::cout << currentEventPtr->timeTaken << "\n";
         if (currentEventPtr->timeTaken != 0) {
             customerTimes.push_back(currentEventPtr->timeTaken);
         }
     }
+    
+//    for (double time : customerTimes) {
+//        std::cout << time << "\n";
+//    }
     
     std::sort(customerTimes.begin(), customerTimes.end());
     std::cout << "Supermarket service time in minutes:\n";
