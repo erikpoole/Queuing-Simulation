@@ -31,10 +31,6 @@ void newPersonEvent::handleEvent(long &globalTime, std::vector<line> &lines, std
     
     lineNumber = determineLine(lines);
     
-    //PROBLEM - inputTimeTaken is aggregate of ALL people in line and assumes just one register
-//    tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+serviceTime+currentLine.totalLineTime, serviceTime, serviceTime+(currentLine.totalLineTime/6));
-    
-
     if (lines[lineNumber].registers > 0) {
         lines[lineNumber].registers--;
         tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+serviceTime, serviceTime, serviceTime, lineNumber);
@@ -56,7 +52,6 @@ void tellerFreedEvent::handleEvent(long &globalTime, std::vector<line> &lines, s
     }
     globalTime = eventTime;
     
-//    std::cout << lines[lineNumber].totalLineTime << "\n";
     if (lines[lineNumber].customers.size() == 0) {
         lines[lineNumber].registers++;
     } else {

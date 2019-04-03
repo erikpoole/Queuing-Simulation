@@ -15,13 +15,13 @@
 int main(int argc, const char * argv[]) {
     
     double customersPerSecond = std::stod(argv[1]) / 60;
-    double maximumServiceTimeInSeconds = std::stod(argv[2]) * 60;
-    double randomSeed = std::stod(argv[3]);
+    long maximumServiceTimeInSeconds = std::stol(argv[2]) * 60;
+    int randomSeed = std::stod(argv[3]);
     
     long globalTimeInSeconds = 0;
     long workdayInSeconds = 12*60*60;
-//    long workdayInSeconds = 200;
-//    long workdayInSeconds = 210;
+//    long workdayInSeconds = 1325;
+//    long workdayInSeconds = 325;
 
     
     srand(randomSeed);
@@ -35,13 +35,13 @@ int main(int argc, const char * argv[]) {
 //    TODO close enough to number..?
     for (int i = 0; i < workdayInSeconds; i++) {
         if (rand() % (long) (1/customersPerSecond) == 0) {
-            long serviceTime = rand() % (long) maximumServiceTimeInSeconds;
+            long serviceTime = rand() % maximumServiceTimeInSeconds;
             newPersonEvent* eventPtr = new newPersonEvent(i, serviceTime, 0, -1);
             eventQueue.push(eventPtr);
         }
     }
     
-    std::cout << "Customers: " << eventQueue.size() << "\n\n";
+    std::cout << "Total Customers: " << eventQueue.size() << "\n\n";
     while (eventQueue.size() != 0 && globalTimeInSeconds < workdayInSeconds) {
         
         event* currentEventPtr = eventQueue.top();
@@ -59,6 +59,7 @@ int main(int argc, const char * argv[]) {
 //        std::cout << time << "\n";
 //    }
     
+    std::cout << "Customers Served: " << customerTimes.size() << "\n";
     std::sort(customerTimes.begin(), customerTimes.end());
     std::cout << "Bank service time in minutes:\n";
     printPercentiles(customerTimes);
@@ -106,7 +107,8 @@ int main(int argc, const char * argv[]) {
 //    for (double time : customerTimes) {
 //        std::cout << time << "\n";
 //    }
-    
+
+    std::cout << "Customers Served: " << customerTimes.size() << "\n";
     std::sort(customerTimes.begin(), customerTimes.end());
     std::cout << "Supermarket service time in minutes:\n";
     printPercentiles(customerTimes);

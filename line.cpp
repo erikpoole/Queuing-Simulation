@@ -19,8 +19,8 @@ void line::addCustomer(customer newCustomer) {
 }
 
 void line::syncLine(long timePassed) {
-    totalLineTime -= timePassed;
-    if (totalLineTime < 0) {
-        totalLineTime = 0;
+    if (customers.size() != 0) {
+        totalLineTime -= timePassed;
+        assert(totalLineTime >= 0);
     }
 }
