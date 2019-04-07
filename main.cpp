@@ -11,7 +11,7 @@
 
 #include "event.hpp"
 
-const long workdayInSeconds = 12*60*60;
+const long endTime = 12*60*60;
 
 std::vector<line> getBankLine(){
     std::vector<line> bankLines;
@@ -30,7 +30,7 @@ std::vector<line> getMarketLines(){
 
 void fillEventQueue(std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue,  double customersPerSecond,
     double maximumServiceTimeInSeconds){
-    for (int i = 0; i < workdayInSeconds; i++) {
+    for (int i = 0; i < endTime; i++) {
         if (rand() % (long) (1/customersPerSecond) == 0) {
             long serviceTime = rand() % (long) maximumServiceTimeInSeconds;
             newPersonEvent* eventPtr = new newPersonEvent(i, serviceTime, 0, -1);
@@ -42,13 +42,13 @@ void fillEventQueue(std::priority_queue<event*, std::vector<event*>, compareEven
 void printServiceResult(std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue,
     std::vector<line> &Lines, std::vector<long>& customerTimes, int randomSeed){
     srand(randomSeed);
-    long globalTimeInSeconds = 0;
-    while (eventQueue.size() != 0 && globalTimeInSeconds < workdayInSeconds) {
+    long currentTime = 0;
+    while (eventQueue.size() != 0 && currentTime < endTime) {
 
         event* currentEventPtr = eventQueue.top();
         eventQueue.pop();
 
-        currentEventPtr->handleEvent(globalTimeInSeconds, Lines, eventQueue);
+        currentEventPtr->handleEvent(currentTime, Lines, eventQueue);
 
         if (currentEventPtr->timeTaken != 0) {
             customerTimes.push_back(currentEventPtr->timeTaken);
