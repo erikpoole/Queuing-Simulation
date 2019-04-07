@@ -11,16 +11,15 @@
 
 #include "event.hpp"
 
-const long globalTimeInSeconds = 0;
 const long workdayInSeconds = 12*60*60;
 
-std::vector<long> getBankLine(){
+std::vector<line> getBankLine(){
     std::vector<line> bankLines;
     bankLines.push_back(line(6));
     return bankLines;
 }
 
-std::vector<long> getMarketLines(){
+std::vector<line> getMarketLines(){
     std::vector<line> marketLines;
     for (int i = 0; i < 6; i++) {
         marketLines.push_back(line(1));
@@ -29,9 +28,21 @@ std::vector<long> getMarketLines(){
     return marketLines;
 }
 
+void fillEventQueue(std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue,  double customersPerSecond,
+    double maximumServiceTimeInSeconds){
+    for (int i = 0; i < workdayInSeconds; i++) {
+        if (rand() % (long) (1/customersPerSecond) == 0) {
+            long serviceTime = rand() % (long) maximumServiceTimeInSeconds;
+            newPersonEvent* eventPtr = new newPersonEvent(i, serviceTime, 0, -1);
+            eventQueue.push(eventPtr);
+        }
+    }
+}
 
 void printServiceResult(std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue,
-    std::vector<line> &Lines, std::vector<long>& customerTimes){
+    std::vector<line> &Lines, std::vector<long>& customerTimes, int randomSeed){
+    srand(randomSeed);
+    long globalTimeInSeconds = 0;
     while (eventQueue.size() != 0 && globalTimeInSeconds < workdayInSeconds) {
 
         event* currentEventPtr = eventQueue.top();
@@ -44,6 +55,7 @@ void printServiceResult(std::priority_queue<event*, std::vector<event*>, compare
         }
     }
 
+    //reuse prupose
     while(eventQueue.size() !=0){
         eventQueue.pop();
     }
@@ -51,6 +63,7 @@ void printServiceResult(std::priority_queue<event*, std::vector<event*>, compare
     std::sort(customerTimes.begin(), customerTimes.end());
     printPercentiles(customerTimes);
 
+    //resue purpose
     customerTimes.clear();
 }
 
@@ -65,99 +78,15 @@ int main(int argc, const char * argv[]) {
     srand(randomSeed);
     std::priority_queue<event*, std::vector<event*>, compareEvents> eventQueue;
     std::vector<long> customerTimes;
-    
-    // Fill out the eventQueue
-    for (int i = 0; i < workdayInSeconds; i++) {
-        if (rand() % (long) (1/customersPerSecond) == 0) {
-            long serviceTime = rand() % (long) maximumServiceTimeInSeconds;
-            newPersonEvent* eventPtr = new newPersonEvent(i, serviceTime, 0, -1);
-            eventQueue.push(eventPtr);
-        }
-    }
 
     //Simulate bank service
-    std::vector<long> bankline = getBankLine();
-    printServiceResult(eventQueue, bankline, customerTimes);
+    std::vector<line> bankline = getBankLine();
+    fillEventQueue(eventQueue, customersPerSecond, maximumServiceTimeInSeconds);
+    printServiceResult(eventQueue, bankline, customerTimes, randomSeed);
+
     //Simulate SupermarketService
-    std::vector<long> marketLines = getMarketLines();
-    printServiceResult(eventQueue, marketLines, customerTimes);
-    
-////    std::cout << "Total Customers: " << eventQueue.size() << "\n\n";
-//    while (eventQueue.size() != 0 && globalTimeInSeconds < workdayInSeconds) {
-//
-//        event* currentEventPtr = eventQueue.top();
-//        eventQueue.pop();
-//
-//        currentEventPtr->handleEvent(globalTimeInSeconds, bankLines, eventQueue);
-//
-////        std::cout << currentEventPtr->timeTaken << "\n";
-//        if (currentEventPtr->timeTaken != 0) {
-//            customerTimes.push_back(currentEventPtr->timeTaken);
-//        }
-//    }
-//
-//    while(eventQueue.size() !=0){
-//        eventQueue.pop();
-//    }
-//
-////    for (double time : customerTimes) {
-////        std::cout << time << "\n";
-////    }
-//
-////    std::cout << "Customers Served: " << customerTimes.size() << "\n";
-//    std::sort(customerTimes.begin(), customerTimes.end());
-////    std::cout << "Bank service time in minutes:\n";
-//    printPercentiles(customerTimes);
-    
-    
-    
-
-
-//    globalTimeInSeconds = 0;
-//
-//
-//    srand(randomSeed);
-//    eventQueue = std::priority_queue<event*, std::vector<event*>, compareEvents>();
-//    customerTimes = std::vector<long>();
-//    assert(eventQueue.size() == 0 && customerTimes.size() == 0);
-//
-//    std::vector<line> marketLines;
-//    for (int i = 0; i < 6; i++) {
-//        marketLines.push_back(line(1));
-//    }
-//
-//
-//    //TODO close enough to number..?
-//    for (int i = 0; i < workdayInSeconds; i++) {
-//        if (rand() % (long) (1/customersPerSecond) == 0) {
-//            long serviceTime = rand() % (long) maximumServiceTimeInSeconds;
-//            newPersonEvent* eventPtr = new newPersonEvent(i, serviceTime, 0, -1);
-//            eventQueue.push(eventPtr);
-//        }
-//    }
-//
-//    while (eventQueue.size() != 0 && globalTimeInSeconds < workdayInSeconds) {
-//
-//        event* currentEventPtr = eventQueue.top();
-//        eventQueue.pop();
-//
-//        currentEventPtr->handleEvent(globalTimeInSeconds, marketLines, eventQueue);
-//
-////        std::cout << currentEventPtr->timeTaken << "\n";
-//        if (currentEventPtr->timeTaken != 0) {
-//            customerTimes.push_back(currentEventPtr->timeTaken);
-//        }
-//    }
-//
-////    for (double time : customerTimes) {
-////        std::cout << time << "\n";
-////    }
-//
-//    std::cout << "Customers Served: " << customerTimes.size() << "\n";
-//    std::sort(customerTimes.begin(), customerTimes.end());
-//    std::cout << "Supermarket service time in minutes:\n";
-//    printPercentiles(customerTimes);
-
-    
+    std::vector<line> marketLines = getMarketLines();
+    fillEventQueue(eventQueue, customersPerSecond, maximumServiceTimeInSeconds);
+    printServiceResult(eventQueue, marketLines, customerTimes, randomSeed);
     
 }
