@@ -22,7 +22,6 @@ void event::handleEvent(long &globalTime, std::vector<line> &lines, std::priorit
 
 
 void newPersonEvent::handleEvent(long &globalTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue) {
-//        std::cout << "New Person\n";
 
     for (line l : lines) {
         l.syncLine(eventTime-globalTime);
@@ -55,8 +54,9 @@ void tellerFreedEvent::handleEvent(long &globalTime, std::vector<line> &lines, s
     if (lines[lineNumber].customers.size() == 0) {
         lines[lineNumber].registers++;
     } else {
-        customer currentCustomer = lines[lineNumber].customers.front();
-        lines[lineNumber].customers.pop();
+        //Replace the orginal codes with calling removeCustomer function
+        customer currentCustomer = lines[lineNumber].removeCustomer();
+        if(currentCustomer.arrivalTime == -1 && currentCustomer.timeNeeded == -1) return;
         tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+currentCustomer.timeNeeded, serviceTime, globalTime-currentCustomer.arrivalTime+serviceTime, lineNumber);
         eventQueue.push(eventPtr);
     }
@@ -91,14 +91,16 @@ void printPercentiles(std::vector<long> inputVector) {
     
     double valuesPerPercentile = (double) inputVector.size() / 100;
 
-//    int tenthPercentileIndex = (int) 10*valuesPerPercentile;
-//    int fiftiethPercentileIndex = (int) 50*valuesPerPercentile;
+    int tenthPercentileIndex = (int) 10*valuesPerPercentile;
+    int fiftiethPercentileIndex = (int) 50*valuesPerPercentile;
     int nintiethPercentileIndex = (int) 90*valuesPerPercentile;
     
-//    double tenthPercentile = (double) inputVector[tenthPercentileIndex]/60;
-//    double fiftiethPercentile = (double) inputVector[fiftiethPercentileIndex]/60;
+    double tenthPercentile = (double) inputVector[tenthPercentileIndex]/60;
+    double fiftiethPercentile = (double) inputVector[fiftiethPercentileIndex]/60;
     double nintiethPercentile = (double) inputVector[nintiethPercentileIndex]/60;
     
-//    std::cout << "10th percenile " << tenthPercentile << "\n50th percentile " << fiftiethPercentile << "\n90th percentile " << nintiethPercentile << "\n\n";
+    std::cout << "10th percenile " << tenthPercentile << "\n50th percentile " << fiftiethPercentile << "\n90th percentile " << nintiethPercentile << "\n\n";
     std::cout << nintiethPercentile << "\n";
+
+    //return nintiethPercentile;
 }

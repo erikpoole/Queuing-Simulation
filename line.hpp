@@ -24,5 +24,6 @@ public:
     
     line(int numRegisters);
     void addCustomer(customer newCustomer);
+    customer removeCustomer();
     void syncLine(long timePassed);
 };

@@ -18,6 +18,13 @@ void line::addCustomer(customer newCustomer) {
     customers.push(newCustomer);
 }
 
+customer line::removeCustomer(){
+    if(customers.size() == 0) return {-1,-1};
+    customer currentCustomer = customers.front();
+    customers.pop();
+    return currentCustomer;
+};
+
 void line::syncLine(long timePassed) {
     if (customers.size() != 0) {
         totalLineTime -= timePassed;
