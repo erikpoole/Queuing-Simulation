@@ -47,12 +47,10 @@ void newPersonEvent::handleEvent(long &globalTime, std::vector<line> &lines, std
     }
 }
 
-//event(long inputEventTime, long inputServiceTime, long inputTimeTaken, long inputLine);
 
 
 
 void tellerFreedEvent::handleEvent(long &globalTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue) {
-//    std::cout << "Teller Freed\n";
     
     for (line l : lines) {
         l.syncLine(eventTime-globalTime);

@@ -47,6 +47,5 @@ void line::syncLine(long timePassed) {
         if (totalLineTime < 0) {
             totalLineTime = 0;
         }
-//        assert(totalLineTime >= 0);
     }
 }

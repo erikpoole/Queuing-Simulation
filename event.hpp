@@ -57,7 +57,6 @@ public:
 };
 
 
-//int determineLine(std::vector<long> lineTimes);
 int determineLine(std::vector<line> lineTimes);
 
 void printPercentiles(std::vector<long> inputVector);
