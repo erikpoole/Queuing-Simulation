@@ -15,9 +15,17 @@ event::event(long inputEventTime, long inputServiceTime, long inputTimeTaken, lo
     lineNumber = inputLine;
 }
 
+long event::getTimeTaken(){
+    return timeTaken;
+}
+
 
 void event::handleEvent(long &globalTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue) {
     assert(false);
+}
+
+long event::getEventTime(){
+    return eventTime;
 }
 
 
@@ -30,8 +38,8 @@ void newPersonEvent::handleEvent(long &globalTime, std::vector<line> &lines, std
     
     lineNumber = determineLine(lines);
     
-    if (lines[lineNumber].registers > 0) {
-        lines[lineNumber].registers--;
+    if (lines[lineNumber].getRegister() > 0) {
+        lines[lineNumber].setRegister(-1);
         tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+serviceTime, serviceTime, serviceTime, lineNumber);
         eventQueue.push(eventPtr);
     } else {
@@ -51,35 +59,35 @@ void tellerFreedEvent::handleEvent(long &globalTime, std::vector<line> &lines, s
     }
     globalTime = eventTime;
     
-    if (lines[lineNumber].customers.size() == 0) {
-        lines[lineNumber].registers++;
+    if (lines[lineNumber].getCustomerQueueSize() == 0) {
+        lines[lineNumber].setRegister(1);
     } else {
         //Replace the orginal codes with calling removeCustomer function
         customer currentCustomer = lines[lineNumber].removeCustomer();
-        if(currentCustomer.arrivalTime == -1 && currentCustomer.timeNeeded == -1) return;
-        tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+currentCustomer.timeNeeded, serviceTime, globalTime-currentCustomer.arrivalTime+serviceTime, lineNumber);
+        if(currentCustomer.getArrivalTime() == -1 && currentCustomer.getTimeNeeded() == -1) return;
+        tellerFreedEvent* eventPtr = new tellerFreedEvent(globalTime+currentCustomer.getTimeNeeded(), serviceTime, globalTime-currentCustomer.getArrivalTime()+serviceTime, lineNumber);
         eventQueue.push(eventPtr);
     }
 }
 
 
 bool compareEvents::operator()(event* rhs, event* lhs) {
-    return rhs->eventTime > lhs->eventTime;
+    return rhs->getEventTime() > lhs->getEventTime();
 }
 
 
 
 int determineLine(std::vector<line> lines) {
-    long lowTime = lines[0].totalLineTime;
+    long lowTime = lines[0].getTotalLineTime();
     int index = 0;
     for (int i = 0; i < lines.size(); i++) {
-        if (lines[i].registers > 0) {
+        if (lines[i].getRegister() > 0) {
             return i;
         }
     }
     for (int i = 0; i < lines.size(); i++) {
-        if (lines[i].totalLineTime < lowTime) {
-            lowTime = lines[i].totalLineTime;
+        if (lines[i].getTotalLineTime() < lowTime) {
+            lowTime = lines[i].getTotalLineTime();
             index = i;
         }
     }

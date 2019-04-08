@@ -17,12 +17,16 @@
 
 
 class line {
-public:
+private:
     long totalLineTime;
     int registers;
     std::queue<customer> customers;
-    
+public:
     line(int numRegisters);
+    int getTotalLineTime();
+    int getRegister();
+    void setRegister(int i);
+    int getCustomerQueueSize();
     void addCustomer(customer newCustomer);
     customer removeCustomer();
     void syncLine(long timePassed);

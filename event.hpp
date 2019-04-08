@@ -22,28 +22,29 @@
 class compareEvents;
 
 class event {
-public:
+protected:
     long eventTime;
     long serviceTime;
     long timeTaken;
     long lineNumber;
-    
+public:
     event(long inputEventTime, long inputServiceTime, long inputTimeTaken, long inputLine);
-    
+    long getTimeTaken();
+    long getEventTime();
     virtual void handleEvent(long &globalTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue);
 };
 
 class newPersonEvent : public event {
-public:
+private:
     using event::event;
-    
+public:
     void handleEvent(long &currentTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue);
 };
 
 class tellerFreedEvent : public event {
-public:
+private:
     using event::event;
-    
+public:
     void handleEvent(long &currentTime, std::vector<line> &lines, std::priority_queue<event*, std::vector<event*>, compareEvents> &eventQueue);
 };
 

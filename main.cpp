@@ -50,8 +50,8 @@ void printServiceResult(std::priority_queue<event*, std::vector<event*>, compare
 
         currentEventPtr->handleEvent(currentTime, Lines, eventQueue);
 
-        if (currentEventPtr->timeTaken != 0) {
-            customerTimes.push_back(currentEventPtr->timeTaken);
+        if (currentEventPtr->getTimeTaken()!= 0) {
+            customerTimes.push_back(currentEventPtr->getTimeTaken());
         }
     }
 

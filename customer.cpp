@@ -12,3 +12,11 @@ customer::customer(long inputArrivalTime, long inputTimeNeeded) {
     arrivalTime = inputArrivalTime;
     timeNeeded = inputTimeNeeded;
 }
+
+
+long customer::getArrivalTime(){
+    return arrivalTime;
+}
+long customer::getTimeNeeded(){
+    return timeNeeded;
+}
