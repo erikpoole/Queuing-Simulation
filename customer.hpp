@@ -14,9 +14,11 @@
 #endif /* customer_hpp */
 
 class customer{
-public:
+private:
     long arrivalTime;
     long timeNeeded;
-    
+public:
+    long getArrivalTime();
+    long getTimeNeeded();
     customer(long inputArrivalTime, long inputTimeNeeded);
 };

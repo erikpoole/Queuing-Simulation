@@ -14,8 +14,31 @@ line::line(int numRegisters) {
 }
 
 void line::addCustomer(customer newCustomer) {
-    totalLineTime += newCustomer.timeNeeded;
+    totalLineTime += newCustomer.getTimeNeeded();
     customers.push(newCustomer);
+}
+
+customer line::removeCustomer(){
+    if(customers.size() == 0) return {-1,-1};
+    customer currentCustomer = customers.front();
+    customers.pop();
+    return currentCustomer;
+};
+
+int line::getTotalLineTime(){
+    return totalLineTime;
+}
+
+int line::getRegister(){
+    return registers;
+}
+
+int line::getCustomerQueueSize(){
+    return customers.size();
+}
+
+void line::setRegister(int i){
+    registers += i;
 }
 
 void line::syncLine(long timePassed) {
@@ -24,6 +47,5 @@ void line::syncLine(long timePassed) {
         if (totalLineTime < 0) {
             totalLineTime = 0;
         }
-//        assert(totalLineTime >= 0);
     }
 }
