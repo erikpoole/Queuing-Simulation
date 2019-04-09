@@ -25,7 +25,7 @@ customer line::removeCustomer(){
     return currentCustomer;
 };
 
-int line::getTotalLineTime(){
+long line::getTotalLineTime(){
     return totalLineTime;
 }
 
@@ -33,7 +33,7 @@ int line::getRegister(){
     return registers;
 }
 
-int line::getCustomerQueueSize(){
+long line::getCustomerQueueSize(){
     return customers.size();
 }
 

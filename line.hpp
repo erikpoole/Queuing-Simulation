@@ -23,10 +23,10 @@ private:
     std::queue<customer> customers;
 public:
     line(int numRegisters);
-    int getTotalLineTime();
+    long getTotalLineTime();
     int getRegister();
     void setRegister(int i);
-    int getCustomerQueueSize();
+    long getCustomerQueueSize();
     void addCustomer(customer newCustomer);
     customer removeCustomer();
     void syncLine(long timePassed);
